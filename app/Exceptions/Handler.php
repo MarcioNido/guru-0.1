@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -72,7 +73,15 @@ class Handler extends ExceptionHandler
             ], $exception->getStatusCode());
         }
 
-        return response()->json(['message' => 'Error ' . $exception->getMessage()], 404);
+        if ($exception instanceof ValidationException) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => $exception->getMessage()
+            ], $exception->status);
+        }
+
+        // @todo: change default error message after common errors are detected and treated
+        return response()->json(['message' => 'Guru Error: ' . $exception->getMessage()], 404);
 
     }
 }

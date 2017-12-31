@@ -21,7 +21,7 @@ class ApiController extends Controller
     protected function responseUnprocessableEntity($data)
     {
         return response()->json([
-            'status' => 'error',
+            'status' => 'fail',
             'errors' => $data,
         ], 422);
     }
@@ -40,5 +40,21 @@ class ApiController extends Controller
             'token'     => $token,
         ], 201);
     }
+
+    /**
+     * Return a response code 200 (success) with a token attached to the response
+     * @param $data
+     * @param $token
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function responseSuccessWithToken($data, $token)
+    {
+        return response()->json([
+            'status'    => 'success',
+            'data'      => $data,
+            'token'     => $token,
+        ], 200);
+    }
+
 
 }
